@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1012366994883",
+    "project_id": "sport-news-c1c3d",
+    "storage_bucket": "sport-news-c1c3d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012366994883:android:cd8f742b9a8b33e4bf2176",
+        "android_client_info": {
+          "package_name": "finance.usdt.coin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012366994883-3fbd3uslmv4feedp9ifs1e6oktec4qkr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqQxKc-fYxoMsz-bJYxt2G3kBN2nZ3D6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012366994883-3fbd3uslmv4feedp9ifs1e6oktec4qkr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
