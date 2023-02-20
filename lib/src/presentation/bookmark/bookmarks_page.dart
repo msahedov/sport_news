@@ -5,14 +5,9 @@ import 'package:sport_news/src/data/news/local_data_source.dart';
 import 'package:sport_news/src/data/news/model.dart';
 import 'package:sport_news/src/presentation/home/widgets/report_widget.dart';
 
-class BookmarksPage extends StatefulWidget {
+class BookmarksPage extends StatelessWidget {
   const BookmarksPage({super.key});
 
-  @override
-  State<BookmarksPage> createState() => _BookmarksPageState();
-}
-
-class _BookmarksPageState extends State<BookmarksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

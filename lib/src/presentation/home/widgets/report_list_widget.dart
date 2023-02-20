@@ -5,8 +5,8 @@ import 'package:sport_news/src/core/theme/colors.dart';
 import 'package:sport_news/src/data/news/local_data_source.dart';
 import 'package:sport_news/src/presentation/home/widgets/report_widget.dart';
 
-class NewsListWidget extends StatelessWidget {
-  const NewsListWidget({Key? key, required this.valueNotifier}) : super(key: key);
+class ReportListWidget extends StatelessWidget {
+  const ReportListWidget({Key? key, required this.valueNotifier}) : super(key: key);
 
   final ValueNotifier<SportType> valueNotifier;
 

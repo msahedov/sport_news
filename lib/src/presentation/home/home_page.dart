@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
             },
           ),
         ),
-        body: NewsListWidget(valueNotifier: valueNotifier),
+        body: ReportListWidget(valueNotifier: valueNotifier),
       ),
     );
   }
