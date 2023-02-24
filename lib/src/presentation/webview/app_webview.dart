@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sport_news/src/core/theme/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class AppWebView extends StatefulWidget {
@@ -29,38 +31,84 @@ class _AppWebViewState extends State<AppWebView> {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller =
+        WebViewController.fromPlatformCreationParams(params);
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..loadRequest(Uri.parse(widget.url));
+
+    ///Save url in local storage
+    ///
+    _prefs.then((preferences) {
+      _saveUrl(preferences);
+    });
 
     _controller = controller;
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      key: Key('app_webview_pop_button'),
-      onWillPop: _onWillPopScope,
-      child: FutureBuilder<SharedPreferences>(
-          future: _prefs,
-          builder: (context, AsyncSnapshot<SharedPreferences> snapshot) {
-            _saveUrl(snapshot.data);
-            if (snapshot.connectionState == ConnectionState.none) {
-              return Container();
-            } else {
-              return WebViewWidget(controller: _controller);
-            }
-          }),
-    );
+    return FutureBuilder<bool>(
+        future: checkNetwork(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.data == false) {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("No network connection",
+                        style: Theme.of(context).textTheme.titleLarge),
+                    const SizedBox(height: 10),
+                    Text("Please check your network settings \n and try again",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 40),
+                    ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: appColorBlack,
+                        ),
+                        icon: const Icon(Icons.refresh, color: appColorWhite),
+                        label: Text("Try again",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: appColorWhite)),
+                        onPressed: () {
+                          setState(() {});
+                        }),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return WillPopScope(
+              key: const Key('app_webview_pop_button'),
+              onWillPop: _onWillPopScope,
+              child: WebViewWidget(controller: _controller),
+            );
+          }
+        });
+  }
+
+  Future<bool> checkNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('www.google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) return true;
+    } on SocketException catch (_) {
+      return false;
+    } catch (_) {
+      return false;
+    }
+    return false;
   }
 
   _saveUrl(SharedPreferences? preferences) async {
     var urls = preferences?.getStringList('urls');
     urls?.add(widget.url);
-    preferences
-        ?.setStringList('urls', urls ?? [])
-        .then((value) => value ? print("Succesfully saved!") : print("Error"));
+    preferences?.setStringList('urls', urls ?? []).then((value) =>
+        value ? debugPrint("Succesfully saved!") : debugPrint("Error"));
   }
 
   Future<bool> _onWillPopScope() async {

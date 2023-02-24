@@ -11,19 +11,19 @@ class BookmarksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: Key('bookmark_page_scaffold'),
+      key: const Key('bookmark_page_scaffold'),
       backgroundColor: appColorBlack,
       appBar: AppBar(
-        key: Key('bookmark_page_appbar'),
+        key: const Key('bookmark_page_appbar'),
         backgroundColor: appColorBlack,
-        title: Text("Bookmarks"),
-        leading: BackButton(),
+        title: const Text("Bookmarks"),
+        leading: const BackButton(),
       ),
       body: ValueListenableBuilder<List<Report>>(
           valueListenable: LocalNewsDataSource.bookmarks,
           builder: (context, List<Report> bookmarks, Widget? child) {
             return ListView.separated(
-                key: Key('bookmark_report_list'),
+                key: const Key('bookmark_report_list'),
                 itemCount: bookmarks.length,
                 itemBuilder: (context, index) {
                   return ReportWidget(report: bookmarks[index]);

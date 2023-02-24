@@ -19,13 +19,13 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: Key('report_page_scaffold'),
+      key: const Key('report_page_scaffold'),
       backgroundColor: appColorGrey,
       body: NestedScrollView(
           headerSliverBuilder: (context, inner) {
             return [
               SliverAppBar(
-                key: Key('report_page_app_bar'),
+                key: const Key('report_page_app_bar'),
                 backgroundColor: inner ? appColorBlack : Colors.transparent,
                 title: inner ? Text(widget.report.header ?? '') : const SizedBox.shrink(),
                 expandedHeight: 200,
@@ -99,7 +99,7 @@ class _ReportPageState extends State<ReportPage> {
             ),
           )),
       floatingActionButton: FloatingActionButton(
-          key: Key('report_page_bookmark_button'),
+          key: const Key('report_page_bookmark_button'),
           backgroundColor: appColorBlack,
           onPressed: addOrRemoveBookmark,
           child: LocalNewsDataSource.bookmarks.value.contains(widget.report)

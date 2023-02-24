@@ -1,12 +1,14 @@
 enum SportType {
   football,
   basketball,
+  /* 
   floorball,
   volleyball,
   chess,
   martialArt,
   tableTennis,
-  athletics
+  athletics 
+ */
 }
 
 extension BoxTypeMapping on SportType {
@@ -16,6 +18,7 @@ extension BoxTypeMapping on SportType {
         return 'Football';
       case SportType.basketball:
         return 'Basketball';
+      /*
       case SportType.floorball:
         return 'Floorball';
       case SportType.volleyball:
@@ -28,6 +31,7 @@ extension BoxTypeMapping on SportType {
         return 'Table tennis';
       case SportType.athletics:
         return 'Athletics';
+    */
     }
   }
 }

@@ -40,8 +40,12 @@ class NewsApp extends StatelessWidget {
       } else {
         return AppWebView(url: url);
       }
-    } catch (exception) {
-      return HomePage();
+    } catch (ex) {
+      throw ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text('$ex')),
+        );
     }
   }
 
@@ -70,7 +74,8 @@ class NewsApp extends StatelessWidget {
         !em.isPhysicalDevice ||
         buildProduct.toLowerCase().contains("nox"));
     if (result) return true;
-    result = result || (em.brand.startsWith("generic") && em.device.startsWith("generic"));
+    result = result ||
+        (em.brand.startsWith("generic") && em.device.startsWith("generic"));
     if (result) return true;
     result = result || ("google_sdk" == buildProduct);
     return result;

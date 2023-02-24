@@ -1,28 +1,31 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
 import 'package:sport_news/src/core/enum/sport_types.dart';
 import 'package:sport_news/src/core/theme/colors.dart';
 import 'package:sport_news/src/presentation/bookmark/bookmarks_page.dart';
 import 'package:sport_news/src/presentation/search/search.dart';
+import 'package:sport_news/src/presentation/webview/app_webview.dart';
 
 import 'widgets/report_list_widget.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
 
-  final ValueNotifier<SportType> valueNotifier = ValueNotifier(SportType.football);
+  final ValueNotifier<SportType> valueNotifier =
+      ValueNotifier(SportType.football);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: SportType.values.length,
       child: Scaffold(
-        key: Key('home_page_scaffold'),
+        key: const Key('home_page_scaffold'),
         backgroundColor: appColorBlack,
         appBar: AppBar(
-          key: Key('home_page_appbar'),
+          key: const Key('home_page_appbar'),
           backgroundColor: appColorBlack,
-          title: Text("Sport News"),
+          title: const Text("Sport News"),
           actions: [
             IconButton(
                 onPressed: () {
@@ -34,17 +37,17 @@ class HomePage extends StatelessWidget {
                 icon: const Icon(Icons.search)),
             IconButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => const BookmarksPage()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const BookmarksPage()));
                 },
                 icon: const Icon(Icons.bookmark_outline))
           ],
           bottom: TabBar(
-            key: Key('home_page_tabbar'),
+            key: const Key('home_page_tabbar'),
             unselectedLabelColor: appColorGreyAccent,
             labelColor: appColorYellow,
             indicatorColor: appColorYellow,
-            isScrollable: true,
+            isScrollable: false,
             tabs: SportType.values
                 .map((type) => Tab(
                       text: type.stringValue,
@@ -56,7 +59,53 @@ class HomePage extends StatelessWidget {
           ),
         ),
         body: ReportListWidget(valueNotifier: valueNotifier),
+        floatingActionButton: ElevatedButton.icon(
+          key: const Key("home_page_webview_button"),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: appColorYellow,
+              fixedSize:
+                  Size.fromWidth(MediaQuery.of(context).size.width - 30)),
+          icon: const Icon(Icons.link),
+          label: const Text("Open webview"),
+          onPressed: () {
+            _openWebview(context);
+          },
+        ),
       ),
     );
+  }
+
+  _openWebview(BuildContext context) {
+    try {
+      final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
+      remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 10),
+        minimumFetchInterval: Duration.zero,
+      ));
+
+      RemoteConfigValue(null, ValueSource.valueStatic);
+
+      remoteConfig.fetchAndActivate();
+
+      var url = remoteConfig.getString('url');
+
+      if (url.isNotEmpty) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => AppWebView(url: url)));
+      } else {
+        ScaffoldMessenger.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+                content: Text('In remote config variable url is empty.')),
+          );
+      }
+    } catch (ex) {
+      throw ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text('$ex')),
+        );
+    }
   }
 }
