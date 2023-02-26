@@ -12,6 +12,8 @@ class ReportWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String reportDate =
+        DateFormat('dd MMMM yyyy').format(report.timestamp!).toString();
     return ListTile(
       key: const Key('report_list_tile'),
       onTap: () {
@@ -21,7 +23,7 @@ class ReportWidget extends StatelessWidget {
       leading: Image.asset('assets/news/${report.id}.jpg'),
       title: Text(
         report.header ?? '',
-        overflow: TextOverflow.ellipsis,
+        overflow: TextOverflow.clip,
         maxLines: 3,
         style: Theme.of(context)
             .textTheme
@@ -29,7 +31,7 @@ class ReportWidget extends StatelessWidget {
             ?.copyWith(color: appColorWhite),
       ),
       subtitle: Text(
-        DateFormat('dd MMMM yyyy').format(report.timestamp!).toString(),
+        reportDate,
         style: Theme.of(context)
             .textTheme
             .titleSmall

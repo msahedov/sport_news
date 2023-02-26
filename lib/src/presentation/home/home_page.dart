@@ -1,11 +1,9 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
 import 'package:sport_news/src/core/enum/sport_types.dart';
 import 'package:sport_news/src/core/theme/colors.dart';
 import 'package:sport_news/src/presentation/bookmark/bookmarks_page.dart';
 import 'package:sport_news/src/presentation/search/search.dart';
-import 'package:sport_news/src/presentation/webview/app_webview.dart';
 
 import 'widgets/report_list_widget.dart';
 
@@ -59,53 +57,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         body: ReportListWidget(valueNotifier: valueNotifier),
-        floatingActionButton: ElevatedButton.icon(
-          key: const Key("home_page_webview_button"),
-          style: ElevatedButton.styleFrom(
-              backgroundColor: appColorYellow,
-              fixedSize:
-                  Size.fromWidth(MediaQuery.of(context).size.width - 30)),
-          icon: const Icon(Icons.link),
-          label: const Text("Open webview"),
-          onPressed: () {
-            _openWebview(context);
-          },
-        ),
       ),
     );
-  }
-
-  _openWebview(BuildContext context) {
-    try {
-      final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
-      remoteConfig.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: Duration.zero,
-      ));
-
-      RemoteConfigValue(null, ValueSource.valueStatic);
-
-      remoteConfig.fetchAndActivate();
-
-      var url = remoteConfig.getString('url');
-
-      if (url.isNotEmpty) {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AppWebView(url: url)));
-      } else {
-        ScaffoldMessenger.of(context)
-          ..removeCurrentSnackBar()
-          ..showSnackBar(
-            const SnackBar(
-                content: Text('In remote config variable url is empty.')),
-          );
-      }
-    } catch (ex) {
-      throw ScaffoldMessenger.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text('$ex')),
-        );
-    }
   }
 }

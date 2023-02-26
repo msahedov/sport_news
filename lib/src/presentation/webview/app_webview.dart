@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sport_news/src/core/theme/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+
+import 'package:sport_news/src/presentation/webview/network_error_widget.dart';
 
 class AppWebView extends StatefulWidget {
   final String url;
@@ -48,40 +49,12 @@ class _AppWebViewState extends State<AppWebView> {
 
   @override
   Widget build(BuildContext context) {
+    _controller.reload();
     return FutureBuilder<bool>(
         future: checkNetwork(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.data == false) {
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("No network connection",
-                        style: Theme.of(context).textTheme.titleLarge),
-                    const SizedBox(height: 10),
-                    Text("Please check your network settings \n and try again",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 40),
-                    ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: appColorBlack,
-                        ),
-                        icon: const Icon(Icons.refresh, color: appColorWhite),
-                        label: Text("Try again",
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(color: appColorWhite)),
-                        onPressed: () {
-                          setState(() {});
-                        }),
-                  ],
-                ),
-              ),
-            );
+            return NetwotkErrorWidget(controller: _controller);
           } else {
             return WillPopScope(
               key: const Key('app_webview_pop_button'),
@@ -94,7 +67,7 @@ class _AppWebViewState extends State<AppWebView> {
 
   Future<bool> checkNetwork() async {
     try {
-      final result = await InternetAddress.lookup('www.google.com');
+      var result = await InternetAddress.lookup('www.google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) return true;
     } on SocketException catch (_) {
       return false;
@@ -114,12 +87,6 @@ class _AppWebViewState extends State<AppWebView> {
   Future<bool> _onWillPopScope() async {
     if (await _controller.canGoBack()) {
       await _controller.goBack();
-    } else {
-      ScaffoldMessenger.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(
-          const SnackBar(content: Text('No back history item')),
-        );
     }
     return false;
   }
