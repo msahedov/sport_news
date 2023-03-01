@@ -1,8 +1,18 @@
 import 'package:device_info/device_info.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class NewsApp {
   static DeviceInfoPlugin devinfo = DeviceInfoPlugin();
+
+  static initNotify() async {
+    try {
+      await OneSignal.shared.promptUserForPushNotificationPermission();
+      await OneSignal.shared.setAppId("7091da78-cba7-4989-bcdb-71c3b9b12485");
+    } catch (ex) {
+      throw Exception(ex);
+    }
+  }
 
   static builder() async {
     try {

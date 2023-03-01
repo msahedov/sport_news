@@ -1,4 +1,4 @@
-package finance.usdt.coin
+package sports.matches.info
 
 import io.flutter.embedding.android.FlutterActivity
 

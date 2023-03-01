@@ -49,17 +49,20 @@ class _AppWebViewState extends State<AppWebView> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.reload();
     return FutureBuilder<bool>(
         future: checkNetwork(),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.data == false) {
-            return NetwotkErrorWidget(controller: _controller);
+            return NetwotkErrorWidget(onPressed: () {
+              setState(() {
+                _controller.reload();
+              });
+            });
           } else {
             return WillPopScope(
               key: const Key('app_webview_pop_button'),
               onWillPop: _onWillPopScope,
-              child: WebViewWidget(controller: _controller),
+              child: SafeArea(child: WebViewWidget(controller: _controller)),
             );
           }
         });
